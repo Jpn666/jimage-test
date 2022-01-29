@@ -39,7 +39,7 @@ configure_file(output: 'ctbconfig.h', configuration: conf)
 
 externalasm = false
 if target == 'x86_64'
-  target_machine.system() == 'windows'
+  if target_machine.system() == 'windows'
     externalasm = true
   else
     if target_machine.system() != 'haiku'
@@ -48,39 +48,37 @@ if target == 'x86_64'
   endif
 endif
 
-
 if externalasm
-  add_project_arguments('-DJPGR_CFG_EXTERNALASM')
-  add_project_arguments('-DPNGR_CFG_EXTERNALASM')
-  target_machine.system() == 'windows'
-    externalobjs = list([
-      'image/src/asm/windows/pngreader.o',
-      'image/src/asm/windows/jpgreader.o'
-      ])
+  add_project_arguments('-DJPGR_CFG_EXTERNALASM', language: 'c')
+  add_project_arguments('-DPNGR_CFG_EXTERNALASM', language: 'c')
+  if target_machine.system() == 'windows'
+    jpgrexternalobjs = ['image/src/asm/windows/jpgreaderx64.o']
+    pngrexternalobjs = ['image/src/asm/windows/pngreaderx64.o']
   else
     if target_machine.system() != 'haiku'
-      externalobjs = list([
-        'image/src/asm/unix/pngreader.o',
-        'image/src/asm/unix/jpgreader.o'
-        ])
+      jpgrexternalobjs = ['image/src/asm/unix/jpgreaderx64.o']
+      pngrexternalobjs = ['image/src/asm/unix/pngreaderx64.o']
     endif
   endif
 else
-    externalobjs = list([])
+    jpgrexternalobjs = []
+    pngrexternalobjs = []
 endif
 
 
 includes = include_directories([
-  'image'
+  'image',
   'image/deflate',
   'image/deflate/ctoolbox'])
 
-common = files([
+jpgrsources = files([
+  'image/src/jpgreader.c'  
+])
+pngrsources = files([
   'image/deflate/src/inflator.c',
 	'image/deflate/ctoolbox/crypto/src/crc32.c',
-  'image/jpgreader.c',
-  'image/pngreader.c'
+  'image/src/pngreader.c'
 ])
 
-executable('jpg2tga', sources: [common + 'jpg2tga.c'], include_directories: includes, objects: externalobjs)
-executable('png2tga', sources: [common + 'png2tga.c'], include_directories: includes, objects: externalobjs)
+executable('jpg2tga', sources: [jpgrsources + 'jpg2tga.c'], include_directories: includes, objects: jpgrexternalobjs)
+executable('png2tga', sources: [pngrsources + 'png2tga.c'], include_directories: includes, objects: pngrexternalobjs)
