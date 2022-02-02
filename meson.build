@@ -72,13 +72,15 @@ includes = include_directories([
   'image/deflate/ctoolbox'])
 
 jpgrsources = files([
-  'image/src/jpgreader.c'  
+  'image/src/jpgreader.c',
+  'jpg2tga.c'
 ])
 pngrsources = files([
   'image/deflate/src/inflator.c',
-	'image/deflate/ctoolbox/crypto/src/crc32.c',
-  'image/src/pngreader.c'
+  'image/deflate/ctoolbox/crypto/src/crc32.c',
+  'image/src/pngreader.c',
+  'png2tga.c'
 ])
 
-executable('jpg2tga', sources: [jpgrsources + 'jpg2tga.c'], include_directories: includes, objects: jpgrexternalobjs)
-executable('png2tga', sources: [pngrsources + 'png2tga.c'], include_directories: includes, objects: pngrexternalobjs)
+executable('jpg2tga', sources: jpgrsources, include_directories: includes, objects: jpgrexternalobjs)
+executable('png2tga', sources: pngrsources, include_directories: includes, objects: pngrexternalobjs)
