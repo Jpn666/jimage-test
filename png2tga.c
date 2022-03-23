@@ -95,7 +95,7 @@ encoderow(uint8* row, uint8* buffer, TImageInfo* info)
 }
 
 static bool
-writeheader(FILE* handler, TImageInfo* info)
+writeheader(FILE* handler, TImageInfo* info, uintxx bpp)
 {
 	uint8 c;
 	uint16 sizex;
@@ -121,10 +121,7 @@ writeheader(FILE* handler, TImageInfo* info)
 	fwrite(&sizey, 1, 2, handler);
 
 	/* image type: rgb(24) or rgba(32) */
-	c = 24;
-	if (info->cmode == IMAGE_RGBALPHA || info->cmode == IMAGE_GRAYALPHA) {
-		c = 32;
-	}
+	c = bpp;
 	fwrite(&c, 1, 1, handler);
 
 	/* pixel origin (top-left) */
@@ -145,16 +142,16 @@ writetga(FILE* handler, TImageInfo* info, uint8* image)
 	uint8* row;
 	uint8* buffer;
 	
-	if (writeheader(handler, info) == 0) {
-		return 0;
-	}
-	
 	j = 24;
 	if (info->cmode == IMAGE_RGBALPHA || info->cmode == IMAGE_GRAYALPHA) {
 		j = 32;
 	}
-	j = (j >> 3) * info->sizex;
+
+	if (writeheader(handler, info, j) == 0) {
+		return 0;
+	}
 	
+	j = (j >> 3) * info->sizex;
 	buffer = malloc(j);
 	if (buffer == NULL) {
 		return 0;
@@ -205,7 +202,7 @@ main(int argc, char* argv[])
 	tgafile = fopen(argv[2], "wb");
 	if (pngfile == NULL || tgafile == NULL) {
 		puts("IO error, failed to open or create file");
-		return 0;
+		goto L_ERROR2;
 	}
 
 	pngr = pngr_create(PNGR_IGNOREICCP | PNGR_NOCRCCHECK);
@@ -248,7 +245,9 @@ L_ERROR1:
 	
 	pngr_destroy(pngr);
 L_ERROR2:
-	fclose(pngfile);
-	fclose(tgafile);
+	if (pngfile)
+		fclose(pngfile);
+	if (tgafile)
+		fclose(tgafile);
 	return 0;
 }
