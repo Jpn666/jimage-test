@@ -1,4 +1,4 @@
-project('image', 'c', default_options: ['optimization=3'])
+project('image', 'c', default_options: ['optimization=3', 'warning_level=3'])
 
 
 conf = configuration_data()

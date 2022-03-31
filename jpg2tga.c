@@ -8,7 +8,7 @@ static TImageInfo info;
 static uint8*
 encoderow(uint8* row, uint8* buffer, TImageInfo* info)
 {
-	intxx i;
+	uintxx i;
 
 	switch (info->cmode) {
 		case IMAGE_GRAY:
