@@ -215,17 +215,20 @@ main(int argc, char* argv[])
 	pngr_setinputfn(pngr, rcallback, pngfile);
 	if (pngr_initdecoder(pngr, &imageinfo)) {
 		uint8* image;
-		uint8* dcmem;   /* decoder memory */
+		uint8* decodermemory;
 
 		image = malloc(imageinfo.imgsize);
-		dcmem = malloc(imageinfo.rmemory);
-		if (image == NULL || dcmem == NULL) {
-			free(image);
-			free(dcmem);
+		if (image == NULL) {
 			goto L_ERROR2;
 		}
 
-		pngr_setbuffers(pngr, dcmem, image, NULL);
+		decodermemory = malloc(pngr->requiredmemory);
+		if (decodermemory == NULL) {
+			free(image);
+			goto L_ERROR2;
+		}
+
+		pngr_setbuffers(pngr, decodermemory, image, NULL);
 		if (pngr_decodeimg(pngr)) {
 			if (writetga(tgafile, &imageinfo, image) == 0) {
 				puts("Error: ");
@@ -238,7 +241,7 @@ main(int argc, char* argv[])
 
 L_ERROR1:
 		free(image);
-		free(dcmem);
+		free(decodermemory);
 	}
 	else {
 		puts("Error: failed to decode image");
