@@ -10,9 +10,9 @@ encoderow(uint8* row, uint8* buffer, TImageInfo* info)
 {
 	uintxx i;
 
-	switch (info->cmode) {
+	switch (info->colortype) {
 		case IMAGE_GRAY:
-			if (info->bpc == 8) {
+			if (info->depth == 8) {
 				for (i = 0; i < info->sizex; i++) {
 					*buffer++ = row[0];
 					*buffer++ = row[0];
@@ -31,7 +31,7 @@ encoderow(uint8* row, uint8* buffer, TImageInfo* info)
 			return buffer;
 
 		case IMAGE_GRAYALPHA:
-			if (info->bpc == 8) {
+			if (info->depth == 8) {
 				for (i = 0; i < info->sizex; i++) {
 					*buffer++ = row[0];
 					*buffer++ = row[0];
@@ -52,7 +52,7 @@ encoderow(uint8* row, uint8* buffer, TImageInfo* info)
 			return buffer;
 
 		case IMAGE_RGB:
-			if (info->bpc == 8) {
+			if (info->depth == 8) {
 				for (i = 0; i < info->sizex; i++) {
 					*buffer++ = row[2];
 					*buffer++ = row[1];
@@ -71,7 +71,7 @@ encoderow(uint8* row, uint8* buffer, TImageInfo* info)
 			return buffer;
 
 		case IMAGE_RGBALPHA:
-			if (info->bpc == 8) {
+			if (info->depth == 8) {
 				for (i = 0; i < info->sizex; i++) {
 					*buffer++ = row[2];
 					*buffer++ = row[1];
@@ -143,7 +143,8 @@ writetga(FILE* handler, TImageInfo* info, uint8* image)
 	uint8* buffer;
 	
 	j = 24;
-	if (info->cmode == IMAGE_RGBALPHA || info->cmode == IMAGE_GRAYALPHA) {
+	if (info->colortype == IMAGE_RGBALPHA ||
+		info->colortype == IMAGE_GRAYALPHA) {
 		j = 32;
 	}
 

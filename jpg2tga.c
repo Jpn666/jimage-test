@@ -10,7 +10,7 @@ encoderow(uint8* row, uint8* buffer, TImageInfo* info)
 {
 	uintxx i;
 
-	switch (info->cmode) {
+	switch (info->colortype) {
 		case IMAGE_GRAY:
 			for (i = 0; i < info->sizex; i++) {
 				*buffer++ = row[0];
@@ -81,7 +81,7 @@ writetga(FILE* handler, TImageInfo* info, uint8* image)
 	uint8* row;
 	uint8* buffer;
 	
-	j = 24;	
+	j = 24;
 	if (writeheader(handler, info, j) == 0) {
 		return 0;
 	}
