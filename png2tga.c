@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 
-static TImageInfo info;
+static TImageInfo imageinfo;
 
 
 static uint8*
@@ -212,12 +212,12 @@ main(int argc, char* argv[])
 	}
 
 	pngr_setinputfn(pngr, rcallback, pngfile);
-	if (pngr_initdecoder(pngr, &info)) {
+	if (pngr_initdecoder(pngr, &imageinfo)) {
 		uint8* image;
 		uint8* dcmem;   /* decoder memory */
 
-		image = malloc(info.imgsize);
-		dcmem = malloc(info.rmemory);
+		image = malloc(imageinfo.imgsize);
+		dcmem = malloc(imageinfo.rmemory);
 		if (image == NULL || dcmem == NULL) {
 			free(image);
 			free(dcmem);
@@ -226,7 +226,7 @@ main(int argc, char* argv[])
 
 		pngr_setbuffers(pngr, dcmem, image, NULL);
 		if (pngr_decodeimg(pngr)) {
-			if (writetga(tgafile, &info, image) == 0) {
+			if (writetga(tgafile, &imageinfo, image) == 0) {
 				puts("Error: ");
 				goto L_ERROR1;
 			}
