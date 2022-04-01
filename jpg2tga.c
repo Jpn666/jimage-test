@@ -151,7 +151,7 @@ main(int argc, char* argv[])
 		uint8* image;
 		uint8* decodermemory;
 
-		image = malloc(imageinfo.imgsize);
+		image = malloc(imageinfo.size);
 		if (image == NULL) {
 			goto L_ERROR2;
 		}
