@@ -1,5 +1,5 @@
-#include <jpgreader.h>
 #include <stdio.h>
+#include <jpgreader.h>
 
 
 static TImageInfo imageinfo;
@@ -60,7 +60,7 @@ writeheader(FILE* handler, TImageInfo* info, uintxx bpp)
 	fwrite(&sizey, 1, 2, handler);
 
 	/* image type: rgb(24) or rgba(32) */
-	c = bpp;
+	c = (uint8) bpp;
 	fwrite(&c, 1, 1, handler);
 
 	/* pixel origin (top-left) */
@@ -120,6 +120,11 @@ rcallback(uint8* buffer, uintxx size, void* user)
 	}
 	return r;
 }
+
+
+#if defined(__MSVC__)
+	#pragma warning(disable: 4996)
+#endif
 
 int
 main(int argc, char* argv[])
