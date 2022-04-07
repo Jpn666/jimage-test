@@ -100,11 +100,11 @@ writeheader(FILE* handler, TImageInfo* info, uintxx bpp)
 	uint8 c;
 	uint16 sizex;
 	uint16 sizey;
-	
+
 	c = 0x00; fwrite(&c, 1, 1, handler);
 	c = 0x00; fwrite(&c, 1, 1, handler);
 	c = 0x02; fwrite(&c, 1, 1, handler);
-	
+
 	c = 0x00; fwrite(&c, 1, 1, handler);
 	c = 0x00; fwrite(&c, 1, 1, handler);
 	c = 0x00; fwrite(&c, 1, 1, handler);
@@ -141,7 +141,7 @@ writetga(FILE* handler, TImageInfo* info, uint8* image)
 	uintxx rowsize;
 	uint8* row;
 	uint8* buffer;
-	
+
 	j = 24;
 	if (info->colortype == IMAGE_RGBALPHA ||
 		info->colortype == IMAGE_GRAYALPHA) {
@@ -151,7 +151,7 @@ writetga(FILE* handler, TImageInfo* info, uint8* image)
 	if (writeheader(handler, info, j) == 0) {
 		return 0;
 	}
-	
+
 	j = (j >> 3) * info->sizex;
 	buffer = malloc(j);
 	if (buffer == NULL) {
@@ -251,7 +251,7 @@ L_ERROR1:
 	else {
 		puts("Error: failed to decode image");
 	}
-	
+
 	pngr_destroy(pngr);
 L_ERROR2:
 	if (pngfile)
