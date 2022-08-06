@@ -211,7 +211,7 @@ main(int argc, char* argv[])
 		goto L_ERROR2;
 	}
 
-	pngr = pngr_create(PNGR_IGNOREICCP | PNGR_NOCRCCHECK);
+	pngr = pngr_create(PNGR_IGNOREICCP | PNGR_NOCRCCHECK, NULL);
 	if (pngr == NULL) {
 		puts("Error: failed to create reader");
 		goto L_ERROR2;
@@ -220,20 +220,12 @@ main(int argc, char* argv[])
 	pngr_setinputfn(pngr, rcallback, pngfile);
 	if (pngr_initdecoder(pngr, &imageinfo)) {
 		uint8* image;
-		uint8* decodermemory;
 
 		image = malloc(imageinfo.size);
 		if (image == NULL) {
 			goto L_ERROR2;
 		}
-
-		decodermemory = malloc(pngr->requiredmemory);
-		if (decodermemory == NULL) {
-			free(image);
-			goto L_ERROR2;
-		}
-
-		pngr_setbuffers(pngr, decodermemory, image, NULL);
+		pngr_setbuffers(pngr, image, NULL);
 		if (pngr_decodeimg(pngr)) {
 			if (writetga(tgafile, &imageinfo, image) == 0) {
 				puts("Error: ");
@@ -246,7 +238,6 @@ main(int argc, char* argv[])
 
 L_ERROR1:
 		free(image);
-		free(decodermemory);
 	}
 	else {
 		puts("Error: failed to decode image");
