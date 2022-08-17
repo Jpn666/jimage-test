@@ -82,5 +82,14 @@ pngrsources = files([
   'png2tga.c'
 ])
 
-executable('jpg2tga', sources: jpgrsources, include_directories: includes, objects: jpgrexternalobjs)
-executable('png2tga', sources: pngrsources, include_directories: includes, objects: pngrexternalobjs)
+
+largs = []
+if externalasm
+  cc = meson.get_compiler('c')
+  if cc.get_linker_id() == 'ld.bfd'
+    largs += ['-z', 'noexecstack']
+  endif
+endif
+
+executable('jpg2tga', sources: jpgrsources, include_directories: includes, objects: jpgrexternalobjs, link_args: largs)
+executable('png2tga', sources: pngrsources, include_directories: includes, objects: pngrexternalobjs, link_args: largs)
