@@ -48,18 +48,30 @@ if target == 'x86_64'
   endif
 endif
 
+externalobjs = []
 if externalasm
   add_project_arguments('-DJPGR_CFG_EXTERNALASM', language: 'c')
   add_project_arguments('-DPNGR_CFG_EXTERNALASM', language: 'c')
+
+  add_project_arguments(  '-DCRC32_CFG_EXTERNALASM', language: 'c')
+  add_project_arguments('-DADLER32_CFG_EXTERNALASM', language: 'c')
+  base = 'image/deflate/ctoolbox/crypto/src/asm'
   if target_machine.system() == 'windows'
     jpgrexternalobjs = ['image/src/asm/windows/jpgreaderx64.o']
     pngrexternalobjs = ['image/src/asm/windows/pngreaderx64.o']
+    platformpath = 'windows'
   else
     if target_machine.system() != 'haiku'
       jpgrexternalobjs = ['image/src/asm/unix/jpgreaderx64.o']
       pngrexternalobjs = ['image/src/asm/unix/pngreaderx64.o']
+      platformpath = 'unix'
     endif
   endif
+  externalobjs += [base / platformpath /   'crc32x64.o']
+  externalobjs += [base / platformpath / 'adler32x64.o']
+
+  jpgrexternalobjs += externalobjs
+  pngrexternalobjs += externalobjs
 else
     jpgrexternalobjs = []
     pngrexternalobjs = []
