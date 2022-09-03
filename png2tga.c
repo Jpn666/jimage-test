@@ -198,6 +198,7 @@ main(int argc, char* argv[])
 	TPNGReader* pngr;
 	FILE* pngfile;
 	FILE* tgafile;
+	bool done;
 
 	if (argc != 3) {
 		puts("Usage: thisprogram <png file> <target file>");
@@ -206,6 +207,7 @@ main(int argc, char* argv[])
 
 	pngfile = fopen(argv[1], "rb");
 	tgafile = fopen(argv[2], "wb");
+	pngr = NULL;
 	if (pngfile == NULL || tgafile == NULL) {
 		puts("IO error, failed to open or create file");
 		goto L_ERROR2;
@@ -217,6 +219,7 @@ main(int argc, char* argv[])
 		goto L_ERROR2;
 	}
 
+	done = 0;
 	pngr_setinputfn(pngr, rcallback, pngfile);
 	if (pngr_initdecoder(pngr, &imageinfo)) {
 		uint8* image;
@@ -228,26 +231,20 @@ main(int argc, char* argv[])
 		pngr_setbuffers(pngr, image, NULL);
 		if (pngr_decodeimg(pngr)) {
 			if (writetga(tgafile, &imageinfo, image) == 0) {
-				puts("Error: ");
-				goto L_ERROR1;
+				puts("Error: failed to write image");
 			}
+			done = 1;
 		}
-		else {
-			puts("Error: failed to decode image");
-		}
-
-L_ERROR1:
 		free(image);
 	}
-	else {
+
+	if (done == 0) {
 		puts("Error: failed to decode image");
 	}
-
-	pngr_destroy(pngr);
 L_ERROR2:
-	if (pngfile)
-		fclose(pngfile);
-	if (tgafile)
-		fclose(tgafile);
+	if (pngfile) fclose(pngfile);
+	if (tgafile) fclose(tgafile);
+	if (pngr)
+		pngr_destroy(pngr);
 	return 0;
 }
