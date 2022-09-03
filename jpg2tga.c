@@ -143,14 +143,14 @@ main(int argc, char* argv[])
 	tgafile = fopen(argv[2], "wb");
 	jpgr = NULL;
 	if (jpgfile == NULL || tgafile == NULL) {
-		puts("IO error, failed to open or create file");
-		goto L_ERROR2;
+		puts("Error: IO error, failed to open or create file");
+		goto L_ERROR;
 	}
 
 	jpgr = jpgr_create(JPGR_IGNOREICCP, NULL);
 	if (jpgr == NULL) {
-		puts("Error: failed to create reader");
-		goto L_ERROR2;
+		puts("Error: Failed to create reader");
+		goto L_ERROR;
 	}
 
 	done = 0;
@@ -160,13 +160,13 @@ main(int argc, char* argv[])
 
 		image = malloc(imageinfo.size);
 		if (image == NULL) {
-			goto L_ERROR2;
+			goto L_ERROR;
 		}
 
 		jpgr_setbuffers(jpgr, image);
 		if (jpgr_decodeimg(jpgr)) {
 			if (writetga(tgafile, &imageinfo, image) == 0) {
-				puts("Error: failed to write image");
+				puts("Error: Failed to write image");
 			}
 			done = 1;
 		}
@@ -174,9 +174,9 @@ main(int argc, char* argv[])
 	}
 
 	if (done == 0) {
-		puts("Error: failed to decode image");
+		puts("Error: Failed to decode image");
 	}
-L_ERROR2:
+L_ERROR:
 	if (jpgfile) fclose(jpgfile);
 	if (tgafile) fclose(tgafile);
 	if (jpgr)
