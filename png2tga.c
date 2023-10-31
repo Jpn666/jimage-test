@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <pngreader.h>
+#include <stdlib.h>
 
 
 static TImageInfo imageinfo;

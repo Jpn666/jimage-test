@@ -1,7 +1,2 @@
-[wrap-git]
-url = https://github.com/Jpn666/deflate
-revision = master
-depth = 1
-clone-recursive = 1
-
-patch_directory = deflate
+[wrap-redirect]
+filename = image/subprojects/deflate.wrap
