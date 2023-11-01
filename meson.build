@@ -3,7 +3,7 @@ project('image', 'c', default_options: ['buildtype=release', 'warning_level=3'])
 
 deps = []
 deps += [dependency('', fallback : ['ctoolbox', 'lib'])]
-deps += [dependency('', fallback : [   'image', 'lib'])]
+deps += [dependency('', fallback : [  'jimage', 'lib'])]
 
 
 jpgrsources = files([
