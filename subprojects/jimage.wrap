@@ -1,4 +1,4 @@
 [wrap-git]
-url = https://github.com/Jpn666/image
-revision = next
+url = https://github.com/Jpn666/jimage
+revision = master
 depth = 1
